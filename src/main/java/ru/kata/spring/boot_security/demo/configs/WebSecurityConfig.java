@@ -1,17 +1,15 @@
 package ru.kata.spring.boot_security.demo.configs;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
-
-import javax.sql.DataSource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.kata.spring.boot_security.demo.services.UserService;
 
 
 @Configuration
@@ -19,81 +17,41 @@ import javax.sql.DataSource;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final SuccessUserHandler successUserHandler;
 
+
+    private UserService userService;
+
     public WebSecurityConfig(SuccessUserHandler successUserHandler) {
         this.successUserHandler = successUserHandler;
+    }
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/user/**")
-                .authenticated()
+                .antMatchers("/user").authenticated()
                 .and()
-                .formLogin().successHandler(successUserHandler)
+                .formLogin()
                 .and()
                 .logout().logoutSuccessUrl("/");
 
 
-//                .antMatchers("/admin/**").hasRole("ADMIN")
-//                .antMatchers("user/**").hasAnyRole("USER", "ADMIN")
-//                .anyRequest()
-//                .authenticated()
-//                .and()
+//        authenticated().and()
 //                .formLogin().successHandler(successUserHandler)
-//                .permitAll()
 //                .and()
-//                .logout()
-//                .permitAll();
     }
-
     @Bean
-    public JdbcUserDetailsManager usersAndAdmins(DataSource dataSource) {
-        UserDetails userDetails = User.builder()
-                .username("user")
-                .password("user")
-                .roles("USER")
-                .build();
-
-        JdbcUserDetailsManager JDBCUsers = new JdbcUserDetailsManager(dataSource);
-
-        if (JDBCUsers.userExists(userDetails.getUsername())) {
-            JDBCUsers.deleteUser(userDetails.getUsername());
-        }
-        JDBCUsers.createUser(userDetails);
-        return JDBCUsers;
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
-
-
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setUserDetailsService(userService);
+        return daoAuthenticationProvider;
+    }
 }
-
-
-
-
-// аутентификация inMemory
-//    @Bean
-//    @Override
-//    public UserDetailsService userDetailsService() {
-//        UserDetails user =
-//                User.withDefaultPasswordEncoder()
-//                        .username("user")
-//                        .password("user1")
-//                        .roles("USER")
-//                        .build();
-//
-//        return new InMemoryUserDetailsManager(user);
-//    }
-
-
-//        http
-//                .authorizeRequests()
-//                .antMatchers("/admin/**").hasRole("ADMIN")
-//                .antMatchers("/profile/**", "user/**").hasAnyRole("USER", "ADMIN")
-//                .anyRequest()
-//                .authenticated()
-//                .and()
-//                .formLogin().successHandler(successUserHandler)
-//                .permitAll()
-//                .and()
-//                .logout()
-//                .permitAll();

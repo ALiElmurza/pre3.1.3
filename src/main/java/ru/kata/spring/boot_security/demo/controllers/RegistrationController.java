@@ -17,6 +17,14 @@ public class RegistrationController {
         modelAndView.setViewName("index");
         return modelAndView;
     }
+
+    @GetMapping("/user")
+    public ModelAndView userPage() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("user");
+        return modelAndView;
+    }
+
 }
 //
 //    @GetMapping("/authenticated")
