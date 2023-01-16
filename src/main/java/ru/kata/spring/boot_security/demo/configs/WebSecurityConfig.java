@@ -9,6 +9,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+
+import javax.sql.DataSource;
 
 
 @Configuration
@@ -24,12 +27,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                        .antMatchers("/authenticated/**").authenticated();
-
-        http
-                .authorizeRequests()
-                .antMatchers("/", "/index").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("user/**").hasAnyRole("USER", "ADMIN")
+                .anyRequest()
+                .authenticated()
                 .and()
                 .formLogin().successHandler(successUserHandler)
                 .permitAll()
@@ -38,17 +39,48 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
     }
 
-    // аутентификация inMemory
     @Bean
-    @Override
-    public UserDetailsService userDetailsService() {
-        UserDetails user =
-                User.withDefaultPasswordEncoder()
-                        .username("user")
-                        .password("user")
-                        .roles("USER")
-                        .build();
-
-        return new InMemoryUserDetailsManager(user);
+    public JdbcUserDetailsManager usersAndAdmins(DataSource dataSource) {
+        UserDetails userDetails = User.builder()
+                .username("user")
+                .password("user")
+                .roles("USER")
+                .build();
+        JdbcUserDetailsManager JDBCUsers = new JdbcUserDetailsManager(dataSource);
+        JDBCUsers.createUser(userDetails);
+        return JDBCUsers;
     }
+
+
 }
+
+
+
+
+// аутентификация inMemory
+//    @Bean
+//    @Override
+//    public UserDetailsService userDetailsService() {
+//        UserDetails user =
+//                User.withDefaultPasswordEncoder()
+//                        .username("user")
+//                        .password("user1")
+//                        .roles("USER")
+//                        .build();
+//
+//        return new InMemoryUserDetailsManager(user);
+//    }
+
+
+//        http
+//                .authorizeRequests()
+//                .antMatchers("/admin/**").hasRole("ADMIN")
+//                .antMatchers("/profile/**", "user/**").hasAnyRole("USER", "ADMIN")
+//                .anyRequest()
+//                .authenticated()
+//                .and()
+//                .formLogin().successHandler(successUserHandler)
+//                .permitAll()
+//                .and()
+//                .logout()
+//                .permitAll();
