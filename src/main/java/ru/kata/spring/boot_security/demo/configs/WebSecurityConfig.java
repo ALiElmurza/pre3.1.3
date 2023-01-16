@@ -27,16 +27,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("user/**").hasAnyRole("USER", "ADMIN")
-                .anyRequest()
+                .antMatchers("/user/**")
                 .authenticated()
                 .and()
                 .formLogin().successHandler(successUserHandler)
-                .permitAll()
                 .and()
-                .logout()
-                .permitAll();
+                .logout().logoutSuccessUrl("/");
+
+
+//                .antMatchers("/admin/**").hasRole("ADMIN")
+//                .antMatchers("user/**").hasAnyRole("USER", "ADMIN")
+//                .anyRequest()
+//                .authenticated()
+//                .and()
+//                .formLogin().successHandler(successUserHandler)
+//                .permitAll()
+//                .and()
+//                .logout()
+//                .permitAll();
     }
 
     @Bean
@@ -46,7 +54,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .password("user")
                 .roles("USER")
                 .build();
+
         JdbcUserDetailsManager JDBCUsers = new JdbcUserDetailsManager(dataSource);
+
+        if (JDBCUsers.userExists(userDetails.getUsername())) {
+            JDBCUsers.deleteUser(userDetails.getUsername());
+        }
         JDBCUsers.createUser(userDetails);
         return JDBCUsers;
     }

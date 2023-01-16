@@ -17,9 +17,10 @@ public class RegistrationController {
         modelAndView.setViewName("index");
         return modelAndView;
     }
+}
 //
 //    @GetMapping("/authenticated")
 //    public String authenticatedPage(Principal principal) {
 //        return "authenticated: " + principal.getName();
 //    }
-}
+
