@@ -61,6 +61,24 @@ public class AdminController {
         return "redirect:/admin";
     }
 
+    @GetMapping("/update")
+    public String getListToUpdate(Model model) {
+        model.addAttribute("users", userService.findAll());
+        return "/admin/update";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String edit(Model model, @PathVariable("id") Long id) {
+        model.addAttribute("user", userService.findOne(id));
+        return "/admin/edit";
+    }
+
+    @PatchMapping("/{id}")
+    public String update(@ModelAttribute("user") User user) {
+        userService.update(user);
+        return "redirect:/admin";
+    }
+
 
 
 }
