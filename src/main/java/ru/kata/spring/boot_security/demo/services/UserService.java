@@ -95,7 +95,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Bean
-    private BCryptPasswordEncoder BCryptPassword() {
+    protected BCryptPasswordEncoder BCryptPassword() {
         return new BCryptPasswordEncoder();
     }
 }
