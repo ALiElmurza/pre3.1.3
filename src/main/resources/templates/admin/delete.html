@@ -8,19 +8,23 @@
 <body>
 
 <div th:each="user : ${users}">
-  <a th:href="@{/user/{id}/deleteById(id=${user.getId()})}" th:text="${user.toString()}">name</a>
+  <a th:href="@{/admin/{id}/deleteById(id=${user.getId()})}" th:text="${user.toString()}">name</a>
 </div>
 
 <br/>
 
 <button type="button">
-  <a href="/user/new">Добавить нового пользователя</a>
+  <a href="/admin/new">Создать пользователя</a>
 </button>
 
 <br/>
 
 <button type="button">
-  <a href="/user/update">Обновить пользователя</a>
+  <a href="/admin/update">Изменить пользователя</a>
+</button>
+
+<button type="button">
+  <a href="/logout">Выйти</a>
 </button>
 
 </body>

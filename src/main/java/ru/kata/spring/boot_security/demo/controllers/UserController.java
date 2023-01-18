@@ -11,7 +11,7 @@ import ru.kata.spring.boot_security.demo.services.UserService;
 import java.security.Principal;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -21,41 +21,15 @@ public class UserController {
 
     private UserService userService;
 
-    @GetMapping("/")
-    public ModelAndView registrationPage() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("index");
-        return modelAndView;
-    }
-    @GetMapping("/new")
-    public ModelAndView newPage(@ModelAttribute("user") User user) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("new");
-        return modelAndView;
-    }
-    @PostMapping()
-    public ModelAndView create(@ModelAttribute("user") User user) {
-        ModelAndView modelAndView = new ModelAndView();
-        if (userService.save(user)) {
-            modelAndView.setViewName("user");
-        } else modelAndView.setViewName("index");
-        return modelAndView;
-    }
 
-    @GetMapping("/user")
-    public ModelAndView userPage(Principal principal, Model model) {
+
+    @GetMapping()
+    public String userPage(Principal principal, Model model) {
         User user = userService.findByUsername(principal.getName());
         model.addAttribute("user", user);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("user");
-        return modelAndView;
+        return "user/user";
     }
 
-    @GetMapping("user/{id}")
-    public String getUserById(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("user", userService.findOne(id));
-        return "show";
-    }
 
 }
 
