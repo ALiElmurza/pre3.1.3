@@ -6,6 +6,10 @@
 <body>
 <h1 th:text="${user.toString()}">VALUE</h1>
 
+<div th:each="user : ${users}">
+    <a th:href="@{/user/{id}(id=${user.getId()})}" th:text="${user.toString()}">name</a>
+</div>
+
 <button type="button">
     <a href="/logout">Выйти</a>
 </button>
