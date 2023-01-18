@@ -69,6 +69,11 @@ public class User implements UserDetails {
     }
 
     @Override
+    public String toString() {
+        return "Nickname: " + username;
+    }
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
     }

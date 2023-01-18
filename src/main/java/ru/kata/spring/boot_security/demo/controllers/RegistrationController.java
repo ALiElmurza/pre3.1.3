@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.kata.spring.boot_security.demo.models.Role;
@@ -27,32 +28,28 @@ public class RegistrationController {
         return modelAndView;
     }
     @GetMapping("/new")
-    public ModelAndView newPage(@ModelAttribute("user") User user,
-                                @ModelAttribute("role") Role role) {
+    public ModelAndView newPage(@ModelAttribute("user") User user) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("new");
-        System.out.println("1");
         return modelAndView;
     }
     @PostMapping()
     public ModelAndView create(@ModelAttribute("user") User user) {
-        userService.save(user);
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("user");
+        if (userService.save(user)) {
+            modelAndView.setViewName("user");
+        } else modelAndView.setViewName("index");
         return modelAndView;
     }
 
     @GetMapping("/user")
-    public ModelAndView userPage() {
+    public ModelAndView userPage(Principal principal, Model model) {
+        User user = userService.findByUsername(principal.getName());
+        model.addAttribute("user", user);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("user");
         return modelAndView;
     }
 
 }
-//
-//    @GetMapping("/authenticated")
-//    public String authenticatedPage(Principal principal) {
-//        return "authenticated: " + principal.getName();
-//    }
 
