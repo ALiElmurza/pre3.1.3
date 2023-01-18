@@ -10,9 +10,9 @@ import ru.kata.spring.boot_security.demo.services.UserService;
 
 import java.security.Principal;
 
-@RestController
+@Controller
 @RequestMapping("/")
-public class RegistrationController {
+public class UserController {
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -49,6 +49,12 @@ public class RegistrationController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("user");
         return modelAndView;
+    }
+
+    @GetMapping("user/{id}")
+    public String getUserById(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("user", userService.findOne(id));
+        return "show";
     }
 
 }
