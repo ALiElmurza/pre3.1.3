@@ -51,11 +51,18 @@ public class UserService implements UserDetailsService {
             return false;
         }
         user.setPassword(BCryptPassword().encode(user.getPassword()));
-        Role role = new Role("ROLE_USER");
-        user.addRoleToUser(role);
+        user.addRoleToUser(saveRole(new Role("ROLE_USER")));
         userRepository.save(user);
-        roleRepository.save(role);
         return true;
+    }
+
+    @Transactional
+    public Role saveRole(Role role) {
+        Role roleDB = roleRepository.findByName(role.getName());
+        if (roleDB == null) {
+            roleRepository.save(role);
+        }
+        return roleRepository.findByName(role.getName());
     }
 
     public User findByUsername(String username) {

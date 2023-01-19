@@ -26,18 +26,6 @@ public class AdminService {
     }
 
     @Transactional
-    public void save(User user) {
-        User userFromDB = userRepository.findByUsername(user.getUsername());
-        if (userFromDB == null) {
-            user.setPassword(BCrypt().encode(user.getPassword()));
-            Role role = new Role("ROLE_ADMIN");
-            user.addRoleToUser(role);
-            userRepository.save(user);
-            roleRepository.save(role);
-        }
-    }
-
-    @Transactional
     public Role saveRole(Role role) {
         Role roleDB = roleRepository.findByName(role.getName());
         if (roleDB == null) {
@@ -67,4 +55,17 @@ public class AdminService {
     private BCryptPasswordEncoder BCrypt() {
         return new BCryptPasswordEncoder();
     }
+
+    @Transactional
+    public void saveAdmin(User user) {
+        User userFromDB = userRepository.findByUsername(user.getUsername());
+        if (userFromDB == null) {
+            user.setPassword(BCrypt().encode(user.getPassword()));
+            Role role = new Role("ROLE_ADMIN");
+            user.addRoleToUser(role);
+            userRepository.save(user);
+            roleRepository.save(role);
+        }
+    }
+
 }
