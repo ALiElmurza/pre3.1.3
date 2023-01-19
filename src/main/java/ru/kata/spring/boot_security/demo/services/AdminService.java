@@ -55,15 +55,12 @@ public class AdminService {
         Optional<User> foundUser = userRepository.findById(id);
         return foundUser.orElse(null);
     }
+
     @Transactional
     public void update(User user) {
-//        if (user.getPassword().length() < 40) {
-//            user.setPassword(BCrypt().encode(user.getPassword()));
-//        }
-
+        user.setPassword(BCrypt().encode(user.getPassword()));
         user.addRoleToUser(saveRole(new Role("USER_ROLE")));
         userRepository.save(user);
-//        roleRepository.save(role);
     }
 
     @Bean
