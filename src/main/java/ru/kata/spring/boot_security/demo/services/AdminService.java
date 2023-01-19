@@ -47,7 +47,7 @@ public class AdminService {
     @Transactional
     public void update(User user) {
         user.setPassword(BCrypt().encode(user.getPassword()));
-        user.addRoleToUser(saveRole(new Role("USER_ROLE")));
+        user.addRoleToUser(saveRole(new Role("ROLE_USER")));
         userRepository.save(user);
     }
 
