@@ -21,8 +21,6 @@ public class UserController {
 
     private UserService userService;
 
-
-
     @GetMapping()
     public String userPage(Principal principal, Model model) {
         User user = userService.findByUsername(principal.getName());

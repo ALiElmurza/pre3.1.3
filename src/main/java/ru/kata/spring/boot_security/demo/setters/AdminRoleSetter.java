@@ -18,5 +18,6 @@ public class AdminRoleSetter implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         User user = new User("admin", "admin");
         adminService.save(user);
+        adminService.saveRole(new Role("ROLE_USER"));
     }
 }

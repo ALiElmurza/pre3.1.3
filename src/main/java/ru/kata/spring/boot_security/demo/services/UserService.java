@@ -15,10 +15,7 @@ import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
-
-
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,8 +35,6 @@ public class UserService implements UserDetailsService {
         this.roleRepository = roleRepository;
     }
 
-
-
     public List<User> findAll() {
         return userRepository.findAll();
     }
@@ -49,7 +44,6 @@ public class UserService implements UserDetailsService {
 
         return foundUser.orElse(null);
     }
-
     @Transactional
     public boolean save(User user) {
         User userFromDB = userRepository.findByUsername(user.getUsername());
@@ -62,17 +56,6 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
         roleRepository.save(role);
         return true;
-    }
-
-    @Transactional
-    public void update(User updateUser) {
-        //updateUser.setId(id);
-        userRepository.save(updateUser);
-    }
-
-    @Transactional
-    public void delete(Long id) {
-        userRepository.deleteById(id);
     }
 
     public User findByUsername(String username) {
@@ -95,7 +78,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Bean
-    protected BCryptPasswordEncoder BCryptPassword() {
+    private BCryptPasswordEncoder BCryptPassword() {
         return new BCryptPasswordEncoder();
     }
 }

@@ -15,7 +15,6 @@ public class RegistryController {
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
-
     private UserService userService;
     @GetMapping
     public String registrationPage() {
