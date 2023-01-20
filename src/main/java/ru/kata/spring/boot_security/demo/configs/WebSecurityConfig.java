@@ -20,13 +20,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserService userService;
 
-    public WebSecurityConfig(SuccessUserHandler successUserHandler) {
+    public WebSecurityConfig(SuccessUserHandler successUserHandler, UserService userService) {
         this.successUserHandler = successUserHandler;
-    }
-    @Autowired
-    public void setUserService(UserService userService) {
         this.userService = userService;
     }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

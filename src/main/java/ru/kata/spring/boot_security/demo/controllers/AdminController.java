@@ -1,6 +1,5 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +14,7 @@ import java.security.Principal;
 public class AdminController {
     private UserService userService;
     private AdminService adminService;
-    @Autowired
+
     public AdminController(UserService userService,
                            AdminService adminService) {
         this.userService = userService;
@@ -25,7 +24,8 @@ public class AdminController {
     //Список полбзователей
     @GetMapping
     public String adminPage(Principal principal, Model model) {
-        User user = userService.findByUsername(principal.getName());;
+        org.springframework.security.core.userdetails.User user =
+                (org.springframework.security.core.userdetails.User) userService.loadUserByUsername(principal.getName());
         model.addAttribute("user", user);
         model.addAttribute("users", userService.findAll());
         return "admin/admin";
@@ -81,12 +81,7 @@ public class AdminController {
 
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("user") User user) {
-        System.out.println("patch - 1");
         adminService.update(user);
-        System.out.println("patch - 2");
         return "redirect:/admin";
     }
-
-
-
 }

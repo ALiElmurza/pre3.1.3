@@ -1,6 +1,5 @@
 package ru.kata.spring.boot_security.demo.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,7 @@ public class AdminService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
 
-    @Autowired
+
     public AdminService(UserRepository userRepository,
                         RoleRepository roleRepository) {
         this.userRepository = userRepository;
