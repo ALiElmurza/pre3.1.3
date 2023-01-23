@@ -24,9 +24,7 @@ public class AdminController {
     //Список полбзователей
     @GetMapping
     public String adminPage(Principal principal, Model model) {
-        org.springframework.security.core.userdetails.User user =
-                (org.springframework.security.core.userdetails.User) userService.loadUserByUsername(principal.getName());
-        model.addAttribute("user", user);
+        model.addAttribute("user", userService.loadUserByUsername(principal.getName()));
         model.addAttribute("users", userService.findAll());
         return "admin/admin";
     }
@@ -40,7 +38,7 @@ public class AdminController {
 
     @GetMapping("/{id}/deleteById")
     public String getUserToDelete(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("user", userService.findOne(id));
+        model.addAttribute("user", userService.loadUserByUsername(userService.findOne(id).getUsername()));
         return "admin/show";
     }
     @DeleteMapping("/{id}/delete")
@@ -51,7 +49,7 @@ public class AdminController {
     //Вернуть пользователя по id
     @GetMapping("/{id}")
     public String getUserById(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("user", userService.findOne(id));
+        model.addAttribute("user", userService.loadUserByUsername(userService.findOne(id).getUsername()));
         return "admin/show";
     }
     //Создать пользователя
@@ -75,7 +73,7 @@ public class AdminController {
 
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") Long id) {
-        model.addAttribute("user", adminService.findOne(id));
+        model.addAttribute("user", userService.loadUserByUsername(userService.findOne(id).getUsername()));
         return "/admin/edit";
     }
 
